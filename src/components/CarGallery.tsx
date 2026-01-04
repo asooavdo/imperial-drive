@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 import carBmwX7 from "@/assets/car-bmw-x7.jpg";
 import carRangeRover from "@/assets/car-range-rover.jpg";
@@ -57,7 +58,10 @@ const cars = [
 ];
 
 const CarGallery = () => {
-  const handleInquiry = (carName: string) => {
+  const navigate = useNavigate();
+
+  const handleInquiry = (carName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     const message = encodeURIComponent(`مرحباً، أرغب بالاستفسار عن سيارة ${carName}`);
     window.open(`https://wa.me/963998887359?text=${message}`, "_blank");
   };
@@ -92,7 +96,8 @@ const CarGallery = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="luxury-card rounded-lg overflow-hidden group"
+              className="luxury-card rounded-lg overflow-hidden group cursor-pointer"
+              onClick={() => navigate(`/car/${car.id}`)}
             >
               {/* Car Image */}
               <div className="relative h-64 overflow-hidden">
@@ -124,15 +129,28 @@ const CarGallery = () => {
                   </div>
                 </div>
 
-                {/* Inquiry Button */}
-                <Button
-                  variant="imperialOutline"
-                  className="w-full"
-                  onClick={() => handleInquiry(car.nameAr)}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  استفسار خاص
-                </Button>
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <Button
+                    variant="imperial"
+                    className="flex-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/car/${car.id}`);
+                    }}
+                  >
+                    <Eye className="w-4 h-4" />
+                    التفاصيل
+                  </Button>
+                  <Button
+                    variant="imperialOutline"
+                    className="flex-1"
+                    onClick={(e) => handleInquiry(car.nameAr, e)}
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    استفسار
+                  </Button>
+                </div>
               </div>
             </motion.div>
           ))}
